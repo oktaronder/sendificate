@@ -144,10 +144,11 @@ def Main_Application():
 
     def create_powerpoint(excel_path, template_path, output_folder):
         excel_data = pd.read_excel(excel_path)
-        template = Presentation(template_path)
-        column_name = 'AD'  # Değiştirmeniz gereken sütun adı
-        column_data = excel_data[column_name]
+
+        # İlk sütunu al
+        column_data = excel_data.iloc[:, 0]  # 0, ilk sütunu temsil eder
         target_text = '<<FULL NAME>>'
+
         os.makedirs(output_folder, exist_ok=True)
 
         for index, value in enumerate(column_data):
@@ -162,13 +163,13 @@ def Main_Application():
                                 if target_text in run.text:
                                     run.text = run.text.replace(target_text, value_upper)
 
-            # Yeni dosya isimleri için formatlanmış isim oluşturma
             file_number = str(index + 1).zfill(4)  # Dört basamaklı numara oluşturma
             pptx_file_name = f"{file_number}.pptx"
 
             output_path = os.path.join(output_folder, pptx_file_name)
             print_to_console(f"'{pptx_file_name}' adlı PowerPoint sunusu '{output_folder}' klasörüne kaydedildi.")
             presentation.save(output_path)
+
         print_to_console(f"Tüm PowerPoint sunuları '{output_folder}' klasörüne kaydedildi.")
 
     def select_excel():
